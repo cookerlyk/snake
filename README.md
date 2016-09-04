@@ -8,3 +8,8 @@ snake runs into its tail.
 
 By default, the game allows the snake to pass through the walls, to enable the other game mode where hitting a wall
 results in a game over, simply comment out line 43 in the snake_game.py file and un-comment line 42 in that same file.
+
+To run the game, download both snake_main.py and snake_game.py and place in directory of your choice. Navigate to that
+directory in the terminal and type "python3 snake_main.py" into the window and press enter.
+
+Controls are "w s a d" on the keyboard corresponding to up down left right respectively.
