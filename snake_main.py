@@ -5,7 +5,7 @@ Author:       Kyle Cookerly
 Date:         07/01/2016
 
 Description:  Console-based Snake clone, written in Python 3.5.1
-              using the curses module. Mac OSX support only
+              using the curses module.
 
 """
 

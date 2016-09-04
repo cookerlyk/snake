@@ -167,11 +167,9 @@ class Snake(object):
         """
         if self.snake_position[1] == Board.board_height - 1 or \
                 self.snake_position[0] == Board.board_width - 1:
-            curses.beep()
             self.game_over = True  # Y wall hit
 
         if self.snake_position[0] == 0 or self.snake_position[1] == 0:
-            curses.beep()
             self.game_over = True  # X wall hit
 
     def pass_through_walls(self):
