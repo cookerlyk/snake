@@ -17,12 +17,12 @@ Note: You must have python 3.x.x installed on your computer to run.
 
 ____________Controls____________
 
-Up......................W
-Down....................S
-Left....................A
-Right...................D
-Quit....................Q
-Pause...................Spacebar  
+Up......................W<br />
+Down....................S<br />
+Left....................A<br />
+Right...................D<br />
+Quit....................Q<br />
+Pause...................Spacebar<br />
 Resume..................Any Direction Key
 
 
