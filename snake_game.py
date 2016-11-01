@@ -172,10 +172,10 @@ class Board(object):
         return self.fruit_position[1]
 
     def set_fruit_x(self, x_val: int):
-        self.fruit_position[1] = x_val
+        self.fruit_position[0] = x_val
 
     def set_fruit_y(self, y_val: int):
-        self.fruit_position[0] = y_val
+        self.fruit_position[1] = y_val
 
     def get_board_width(self):
         return self.board_width
