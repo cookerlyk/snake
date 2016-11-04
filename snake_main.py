@@ -2,7 +2,6 @@
 
 Filename:     snake_main.py
 Author:       Kyle Cookerly
-Date:         10/29/2016
 
 Description:  Console-based Snake clone, written in Python 3.5.1
               using the curses module.

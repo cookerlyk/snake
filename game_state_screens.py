@@ -2,7 +2,6 @@
 
 Filename:     game_state_screens.py
 Author:       Kyle Cookerly
-Date:         10/29/2016
 
 Description:  Function for the main menu logo and command to launch the game
 
@@ -37,4 +36,5 @@ def draw_game_over_window(score):
         if game_over_screen.getch() is not None:
             break
     curses.endwin()
+    
 

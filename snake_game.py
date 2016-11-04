@@ -2,7 +2,6 @@
 
 Filename:     snake_game.py
 Author:       Kyle Cookerly
-Date:         10/29/2016
 
 Description:  The Game, Snake, and Board classes for terminal-based snake clone
 
