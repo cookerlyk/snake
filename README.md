@@ -1,4 +1,4 @@
-Clone of Snake using Python
+Clone of the classic game Snake for Mac OS
 
 Written in Python 3.5.1 using the curses module for terminal display and control.
 
@@ -7,9 +7,9 @@ the second game mode allows the snake to pass through the walls to the other sid
 snake runs into its tail.
 
 By default, the game allows the snake to pass through the walls, to enable the other game mode where hitting a wall
-results in a game over, simply comment out line 54 in the snake_game.py file and un-comment line 53 in that same file.
+results in a game over, simply comment out line 58 in the snake_game.py file and un-comment line 57 in that same file.
 
-To run the game, download both snake_main.py and snake_game.py and place in directory of your choice. Navigate to that
+To run the game, download files and place in directory of your choice. Navigate to that
 directory in the terminal and type "python3 snake_main.py" into the window and press enter.
 
 Note: You must have python 3.x.x installed on your computer to run.
@@ -18,12 +18,12 @@ Note: You must have python 3.x.x installed on your computer to run.
 ____________Controls____________
 
 Up......................W<br />
-Down..................S<br />
+Down.................S<br />
 Left....................A<br />
 Right..................D<br />
 Quit....................Q<br />
 Pause.................Spacebar<br />
-Resume..................Any Direction Key
+Resume.............Any Direction Key
 
 
 Written and tested on Mac OS El Capitan
