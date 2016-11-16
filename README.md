@@ -1,4 +1,6 @@
-Clone of the classic game Snake for Mac OS
+Clone of the classic game Snake.
+
+Verified compatible with Mac OS and Ubuntu Linux.
 
 Written in Python 3.5.1 using the curses module for terminal display and control.
 
@@ -18,12 +20,12 @@ Note: You must have python 3.x.x installed on your computer to run.
 ____________Controls____________
 
 Up......................W<br />
-Down.................S<br />
+Down..................S<br />
 Left....................A<br />
 Right..................D<br />
 Quit....................Q<br />
 Pause.................Spacebar<br />
-Resume.............Any Direction Key
+Resume..............Any Direction Key
 
 
-Written and tested on Mac OS El Capitan
+Written and tested on Mac OS El Capitan.
