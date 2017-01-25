@@ -38,6 +38,7 @@ class Game(object):
         self.snake = Snake()
 
     def run_game(self):
+
         """
         Run_game is the main gameplay function that calls the functions necessary to run the game loop.
         Functions are called in specific order to ensure correct gameplay
