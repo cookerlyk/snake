@@ -19,17 +19,17 @@ window.border(0)                               # Draws border by default
 
 
 # TODO  Try to break into snake, board and game class files. Will have to figure
-# TODO  out a way to stop snake and board needing access to the window to do this.
-# TODO  Could move the drawing and spot checking for fruit to the game class,
-# TODO  snake class is more challenging as currently written
+#       out a way to stop snake and board needing access to the window to do this.
+#       Could move the drawing and spot checking for fruit to the game class,
+#       snake class is more challenging as currently written
 
-class Game(object):
-    """The Game class class handles the game as a whole"""
+class Game:
+    MAX_GAME_SPEED = 75
+    SCORE_INCREASE = 10
+    PASS_THROUGH_WALLS = True  # if True the snake can pass through the walls, if False hitting the wall is a game over
 
-    max_game_speed = 75
-    score_increase = 10
-    current_game_speed = 110  # Variable to hold integer to update the game speed
-    fruit_eaten = 0           # Keeps track of how many times food was eaten, for increasing game speed
+    current_game_speed = 110
+    fruit_eaten = 0
     score = 0
     game_over = False
 
@@ -38,7 +38,6 @@ class Game(object):
         self.snake = Snake()
 
     def run_game(self):
-
         """
         Run_game is the main gameplay function that calls the functions necessary to run the game loop.
         Functions are called in specific order to ensure correct gameplay
@@ -46,17 +45,20 @@ class Game(object):
         window.addstr(19, 49, "Score:" + str(self.score))
         window.addstr(0, 28, "SNAKE")
 
-        self.board.display_fruit()               # Draws fruit
-        self.snake.display_snake()               # Draws snake
+        self.board.display_fruit()
+        self.snake.display_snake()
 
         self.snake.move_position()               # Gets user input for movement
 
-        self.check_fruit_collision()             # Checks if fruit was hit
-        self.snake.check_tail_collision()        # Checks if the snake hit its own tail
+        self.check_fruit_collision()
+        self.snake.check_tail_collision()
 
         self.set_game_over()                     # Checks if the snake class signaled a game over
-        # self.game_over_if_wall_hit()             # Game ends if the walls are hit by the snake if not commented out
-        self.pass_through_walls()                # Allows the snake to pass through walls if not commented out
+        if not self.PASS_THROUGH_WALLS:
+            self.game_over_if_wall_hit()
+        else:
+            self.pass_through_walls()
+
         self.snake.jump_snake_position()         # Fixes the game crashing bug where you can get stuck in the wall
 
         window.border(0)                         # Redraws border, passing through the wall will break border without
@@ -69,7 +71,7 @@ class Game(object):
         """
         if self.snake.get_snake_head_x() == self.board.get_fruit_x() and \
                         self.snake.get_snake_head_y() == self.board.get_fruit_y():
-            self.score += self.score_increase
+            self.score += self.SCORE_INCREASE
             self.fruit_eaten += 1
             self.snake.grow_snake()
             self.increase_game_speed()
@@ -91,16 +93,12 @@ class Game(object):
     def increase_game_speed(self):
         """Will increase the game speed by 1 every 2nd fruit eaten, up to 70 eaten"""
         if self.fruit_eaten % 2 == 0:
-            if self.current_game_speed > self.max_game_speed:
+            if self.current_game_speed > self.MAX_GAME_SPEED:
                 self.current_game_speed -= 1
 
     def game_over_if_wall_hit(self):
         """
         Gameplay option: Game over when walls are hit by snake head.
-
-        Comment out in the run_game function, if you want to be able to pass through walls
-
-        Precondition: pass_through_walls function must be commented out in run_game function
         """
         if self.snake.get_snake_head_y() == self.board.get_board_height() - 1 or \
                         self.snake.get_snake_head_x() == self.board.get_board_width() - 1:
@@ -112,10 +110,6 @@ class Game(object):
     def pass_through_walls(self):
         """
         Gameplay option: No game over when walls are hit, snake will pass through the wall to the other side
-
-        Comment out in the run_game function, if you want the game to end if you hit a wall
-
-        Precondition: game_over_if_wall_hit function must be commented out in run_game function
         """
         if self.snake.get_snake_head_x() == 0:
             self.snake.set_snake_head_x(self.board.get_board_width() - 1)
@@ -138,15 +132,17 @@ class Game(object):
         curses.endwin()
 
 
-class Board(object):
+class Board:
     """Represents the game board. Class handles the board and the fruit"""
-    board_width = 60                       # X values
-    board_height = 20                      # Y values
-    fruit_position = [randint(1, board_width - 2), randint(1, board_height - 2)]
+    BOARD_WIDTH = 60                       # X values
+    BOARD_HEIGHT = 20                      # Y values
+    FRUIT_CHAR = "@"
+
+    fruit_position = [randint(1, BOARD_WIDTH - 2), randint(1, BOARD_HEIGHT - 2)]
 
     def display_fruit(self):
         """Draws the fruit to the screen based on x and y coordinates"""
-        window.addch(self.fruit_position[1], self.fruit_position[0], "@")
+        window.addch(self.fruit_position[1], self.fruit_position[0], self.FRUIT_CHAR)
 
     def update_fruit_position(self):
         """
@@ -155,15 +151,15 @@ class Board(object):
         """
         fruit_drawn = False
         while not fruit_drawn:
-            self.set_fruit_y(randint(1, self.board_height - 2))
-            self.set_fruit_x(randint(1, self.board_width - 2))
+            self.set_fruit_y(randint(1, self.BOARD_HEIGHT - 2))
+            self.set_fruit_x(randint(1, self.BOARD_WIDTH - 2))
 
             if window.inch(self.get_fruit_y(), self.get_fruit_x()) == ord(" "):
                 fruit_drawn = True
 
             else:
-                self.set_fruit_y(randint(1, self.board_height - 2))
-                self.set_fruit_x(randint(1, self.board_width - 2))
+                self.set_fruit_y(randint(1, self.BOARD_HEIGHT - 2))
+                self.set_fruit_x(randint(1, self.BOARD_WIDTH - 2))
 
     def get_fruit_x(self):
         return self.fruit_position[0]
@@ -178,18 +174,26 @@ class Board(object):
         self.fruit_position[1] = y_val
 
     def get_board_width(self):
-        return self.board_width
+        return self.BOARD_WIDTH
 
     def get_board_height(self):
-        return self.board_height
+        return self.BOARD_HEIGHT
 
 
-class Snake(object):
+class Snake:
     """Class represents the snake"""
+    UP_KEY = "w"
+    DOWN_KEY = "s"
+    LEFT_KEY = "a"
+    RIGHT_KEY = "d"
+    QUIT_KEY = "q"
+    PAUSE_KEY = " "
+    SEGMENT_CHAR = "#"
+    INITIAL_LENGTH = 3
 
     snake_position = [30, 9]              # [X, Y] = starting head position
-    snake_body = [snake_position[:]] * 3  # snake body is 3 segments to start
-    key = None                            # default key is none
+    snake_body = [snake_position[:]] * INITIAL_LENGTH
+    key = None
     game_over = False
     last_valid_key = None
 
@@ -201,36 +205,37 @@ class Snake(object):
         """
         movement = window.getch()
         self.key = self.key if movement == -1 else movement
-        if self.key == ord("w"):      # Up, "w" key
-            self.last_valid_key = "w"
+        if self.key == ord(self.UP_KEY):
+            self.last_valid_key = self.UP_KEY
             self.snake_position[1] -= 1
 
-        elif self.key == ord("a"):    # Left, "a" key
-            self.last_valid_key = "a"
+        elif self.key == ord(self.LEFT_KEY):
+            self.last_valid_key = self.LEFT_KEY
             self.snake_position[0] -= 1
 
-        elif self.key == ord("s"):    # Down, "s" key
-            self.last_valid_key = "s"
+        elif self.key == ord(self.DOWN_KEY):
+            self.last_valid_key = self.DOWN_KEY
             self.snake_position[1] += 1
 
-        elif self.key == ord("d"):    # Right, "d" key
-            self.last_valid_key = "d"
+        elif self.key == ord(self.RIGHT_KEY):
+            self.last_valid_key = self.RIGHT_KEY
             self.snake_position[0] += 1
 
-        elif self.key == ord("q"):    # Quit, "q" key
+        elif self.key == ord(self.QUIT_KEY):
             self.game_over = True
 
-        elif self.key == ord(" "):    # Pause, "space bar"
+        elif self.key == ord(self.PAUSE_KEY):
             pass
 
-        else:                         # Any invalid key press makes the snake continue moving in last valid direction
-            if self.last_valid_key == "w":
+        else:
+            # Any invalid key press makes the snake continue moving in last valid direction
+            if self.last_valid_key == self.UP_KEY:
                 self.snake_position[1] -= 1
-            elif self.last_valid_key == "a":
+            elif self.last_valid_key == self.LEFT_KEY:
                 self.snake_position[0] -= 1
-            elif self.last_valid_key == "s":
+            elif self.last_valid_key == self.DOWN_KEY:
                 self.snake_position[1] += 1
-            elif self.last_valid_key == "d":
+            elif self.last_valid_key == self.RIGHT_KEY:
                 self.snake_position[0] += 1
 
     def display_snake(self):
@@ -242,23 +247,23 @@ class Snake(object):
         if end_of_snake not in self.snake_body:
             window.addch(end_of_snake[1], end_of_snake[0], " ")            # Erases the end of the snake
 
-        window.addch(self.snake_position[1], self.snake_position[0], "#")  # Draws the snake head
+        window.addch(self.snake_position[1], self.snake_position[0], self.SEGMENT_CHAR)  # Draws the snake head
 
         self.snake_body[0] = self.snake_position[:]
 
     def check_tail_collision(self):
         """Checks if the snake head collides with the tail, gameover if true"""
-        if self.key == ord("w"):
-            if window.inch(self.snake_position[1] - 1, self.snake_position[0]) == ord("#"):
+        if self.key == ord(self.UP_KEY):
+            if window.inch(self.snake_position[1] - 1, self.snake_position[0]) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
-        elif self.key == ord("a"):
-            if window.inch(self.snake_position[1], self.snake_position[0] - 1) == ord("#"):
+        elif self.key == ord(self.LEFT_KEY):
+            if window.inch(self.snake_position[1], self.snake_position[0] - 1) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
-        elif self.key == ord("s"):
-            if window.inch(self.snake_position[1] + 1, self.snake_position[0]) == ord("#"):
+        elif self.key == ord(self.DOWN_KEY):
+            if window.inch(self.snake_position[1] + 1, self.snake_position[0]) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
-        elif self.key == ord("d"):
-            if window.inch(self.snake_position[1], self.snake_position[0] + 1) == ord("#"):
+        elif self.key == ord(self.RIGHT_KEY):
+            if window.inch(self.snake_position[1], self.snake_position[0] + 1) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
 
     def jump_snake_position(self):
@@ -269,27 +274,27 @@ class Snake(object):
         moved to the other side.
         """
         # top wall
-        if self.snake_position[1] == Board.board_height - 1 and self.key == ord("a"):
+        if self.snake_position[1] == Board.BOARD_HEIGHT - 1 and self.key == ord(self.LEFT_KEY):
             self.snake_position[1] = 1
-        elif self.snake_position[1] == Board.board_height - 1 and self.key == ord("d"):
+        elif self.snake_position[1] == Board.BOARD_HEIGHT - 1 and self.key == ord(self.RIGHT_KEY):
             self.snake_position[1] = 1
 
         # bottom wall
-        if self.snake_position[1] == 0 and self.key == ord("a"):
-            self.snake_position[1] = Board.board_height - 2
-        elif self.snake_position[1] == 0 and self.key == ord("d"):
-            self.snake_position[1] = Board.board_height - 2
+        if self.snake_position[1] == 0 and self.key == ord(self.LEFT_KEY):
+            self.snake_position[1] = Board.BOARD_HEIGHT - 2
+        elif self.snake_position[1] == 0 and self.key == ord(self.RIGHT_KEY):
+            self.snake_position[1] = Board.BOARD_HEIGHT - 2
 
         # left wall
-        if self.snake_position[0] == 0 and self.key == ord("w"):
-            self.snake_position[0] = Board.board_width - 2
-        elif self.snake_position[0] == 0 and self.key == ord("s"):
-            self.snake_position[0] = Board.board_width - 2
+        if self.snake_position[0] == 0 and self.key == ord(self.UP_KEY):
+            self.snake_position[0] = Board.BOARD_WIDTH - 2
+        elif self.snake_position[0] == 0 and self.key == ord(self.DOWN_KEY):
+            self.snake_position[0] = Board.BOARD_WIDTH - 2
 
         # right wall
-        if self.snake_position[0] == Board.board_width - 1 and self.key == ord("w"):
+        if self.snake_position[0] == Board.BOARD_WIDTH - 1 and self.key == ord(self.UP_KEY):
             self.snake_position[0] = 1
-        elif self.snake_position[0] == Board.board_width - 1 and self.key == ord("s"):
+        elif self.snake_position[0] == Board.BOARD_WIDTH - 1 and self.key == ord(self.DOWN_KEY):
             self.snake_position[0] = 1
 
     def is_game_over(self):

@@ -8,7 +8,7 @@ the second game mode allows the snake to pass through the walls to the other sid
 snake runs into its tail.
 
 By default, the game allows the snake to pass through the walls, to enable the other game mode where hitting a wall
-results in a game over, simply comment out line 58 in the snake_game.py file and un-comment line 57 in that same file.
+results in a game over, simply change the PASS_THROUGH_WALLS variable to False on line 29 of snake_game.py
 
 Written and tested on Mac OS El Capitan.
 
