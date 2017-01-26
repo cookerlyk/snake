@@ -13,19 +13,15 @@ from game_state_screens import draw_start_window, draw_game_over_window, draw_op
 
 
 def main():
-    draw_start_window()                                  # Draws the game logo on startup
-
-    game_mode = draw_option_select_window()              # Draws the option screen and assigns the value to game_mode
-
-    snake_game = Game(game_mode)                         # Creates the object for the game
+    draw_start_window()
+    game_mode = draw_option_select_window()     # Draws the option screen and assigns the value received to game_mode
+    snake_game = Game(game_mode)
 
     while not snake_game.is_game_over():
-        snake_game.run_game()                            # Calls gameplay function until game_over is true
+        snake_game.run_game()
 
-    snake_game.end_window()                              # Closes the game window
-
-    draw_game_over_window(snake_game.get_game_score())   # Draws the game over screen
-
+    snake_game.end_window()
+    draw_game_over_window(snake_game.get_game_score())
 
 if __name__ == "__main__":
     main()

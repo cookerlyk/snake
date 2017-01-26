@@ -3,8 +3,8 @@
 Filename:     game_state_screens.py
 Author:       Kyle Cookerly
 
-Description:  Function for the main menu logo and command to launch the game
-              the game option window and the game over window
+Description:  Function for the main menu logo the game option window
+              and the game over window
 
 """
 
