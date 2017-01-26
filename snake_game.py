@@ -26,14 +26,19 @@ window.border(0)                               # Draws border by default
 class Game:
     MAX_GAME_SPEED = 75
     SCORE_INCREASE = 10
-    PASS_THROUGH_WALLS = True  # if True the snake can pass through the walls, if False hitting the wall is a game over
 
+    pass_through_walls = None
     current_game_speed = 110
     fruit_eaten = 0
     score = 0
     game_over = False
 
-    def __init__(self):
+    def __init__(self, mode):
+        """
+        @Param bool that corresponds to the game type the user selects, if True the snake can pass through the walls
+        if False the game is over when the snake hits the wall
+        """
+        self.pass_through_walls = mode
         self.board = Board()
         self.snake = Snake()
 
@@ -47,17 +52,14 @@ class Game:
 
         self.board.display_fruit()
         self.snake.display_snake()
-
         self.snake.move_position()               # Gets user input for movement
-
         self.check_fruit_collision()
         self.snake.check_tail_collision()
-
         self.set_game_over()                     # Checks if the snake class signaled a game over
-        if not self.PASS_THROUGH_WALLS:
+        if not self.pass_through_walls:
             self.game_over_if_wall_hit()
         else:
-            self.pass_through_walls()
+            self.pass_through_if_wall_hit()
 
         self.snake.jump_snake_position()         # Fixes the game crashing bug where you can get stuck in the wall
 
@@ -107,7 +109,7 @@ class Game:
         if self.snake.get_snake_head_x() == 0 or self.snake.get_snake_head_y() == 0:
             self.game_over = True  # X wall hit
 
-    def pass_through_walls(self):
+    def pass_through_if_wall_hit(self):
         """
         Gameplay option: No game over when walls are hit, snake will pass through the wall to the other side
         """
@@ -134,8 +136,8 @@ class Game:
 
 class Board:
     """Represents the game board. Class handles the board and the fruit"""
-    BOARD_WIDTH = 60                       # X values
-    BOARD_HEIGHT = 20                      # Y values
+    BOARD_WIDTH = 60       # X values
+    BOARD_HEIGHT = 20      # Y values
     FRUIT_CHAR = "@"
 
     fruit_position = [randint(1, BOARD_WIDTH - 2), randint(1, BOARD_HEIGHT - 2)]
@@ -190,8 +192,10 @@ class Snake:
     PAUSE_KEY = " "
     SEGMENT_CHAR = "#"
     INITIAL_LENGTH = 3
+    STARTING_X = 30
+    STARTING_Y = 9
 
-    snake_position = [30, 9]              # [X, Y] = starting head position
+    snake_position = [STARTING_X, STARTING_Y]
     snake_body = [snake_position[:]] * INITIAL_LENGTH
     key = None
     game_over = False
@@ -242,7 +246,7 @@ class Snake:
         """Draws the snake to the console"""
         end_of_snake = self.snake_body[-1][:]
         for i in range(len(self.snake_body)-1, 0, -1):
-            self.snake_body[i] = self.snake_body[i-1]
+            self.snake_body[i] = self.snake_body[i - 1]
 
         if end_of_snake not in self.snake_body:
             window.addch(end_of_snake[1], end_of_snake[0], " ")            # Erases the end of the snake

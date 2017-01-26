@@ -9,12 +9,15 @@ Description:  Console-based Snake clone, written in Python 3.5.1
 """
 
 from snake_game import Game
-from game_state_screens import draw_start_window, draw_game_over_window
+from game_state_screens import draw_start_window, draw_game_over_window, draw_option_select_window
 
 
 def main():
     draw_start_window()                                  # Draws the game logo on startup
-    snake_game = Game()                                  # Creates the object for the game
+
+    game_mode = draw_option_select_window()              # Draws the option screen and assigns the value to game_mode
+
+    snake_game = Game(game_mode)                         # Creates the object for the game
 
     while not snake_game.is_game_over():
         snake_game.run_game()                            # Calls gameplay function until game_over is true

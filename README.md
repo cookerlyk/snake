@@ -7,8 +7,8 @@ The code supports two different game options, the first will end the game when a
 the second game mode allows the snake to pass through the walls to the other side and the game will only end if the
 snake runs into its tail.
 
-By default, the game allows the snake to pass through the walls, to enable the other game mode where hitting a wall
-results in a game over, simply change the PASS_THROUGH_WALLS variable to False on line 29 of snake_game.py
+To choose solid walls select option 1 on the selection screen, selecting option 2 will allow the snake to pass through
+the walls to the other side.
 
 Written and tested on Mac OS El Capitan.
 
