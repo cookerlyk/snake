@@ -18,10 +18,7 @@ window = curses.newwin(20, 60, 0, 10)          # Creates window
 window.border(0)                               # Draws border by default
 
 
-# TODO  Try to break into snake, board and game class files. Will have to figure
-#       out a way to stop snake and board needing access to the window to do this.
-#       Could move the drawing and spot checking for fruit to the game class,
-#       snake class is more challenging as currently written
+# TODO  Try to break into snake, board and game class files
 
 class Game:
     MAX_GAME_SPEED = 75
@@ -184,16 +181,18 @@ class Board:
 
 class Snake:
     """Class represents the snake"""
-    UP_KEY = "w"
-    DOWN_KEY = "s"
-    LEFT_KEY = "a"
-    RIGHT_KEY = "d"
-    QUIT_KEY = "q"
-    PAUSE_KEY = " "
+    UP_KEY = ord("w")
+    DOWN_KEY = ord("s")
+    LEFT_KEY = ord("a")
+    RIGHT_KEY = ord("d")
+    QUIT_KEY = ord("q")
+    PAUSE_KEY = ord(" ")
     SEGMENT_CHAR = "#"
     INITIAL_LENGTH = 3
     STARTING_X = 30
     STARTING_Y = 9
+
+    current_direction = None
 
     snake_position = [STARTING_X, STARTING_Y]
     snake_body = [snake_position[:]] * INITIAL_LENGTH
@@ -207,45 +206,62 @@ class Snake:
         If there is no input, movement continues in direction of the last key press
         Invalid input will continue the snake on the path of the last valid key press
         """
+        #TODO find a better way to handle the nested ifs
         movement = window.getch()
         self.key = self.key if movement == -1 else movement
-        if self.key == ord(self.UP_KEY):
-            self.last_valid_key = self.UP_KEY
-            self.snake_position[1] -= 1
+        if self.key == self.UP_KEY:
+            if self.current_direction != self.DOWN_KEY:
+                self.last_valid_key = self.UP_KEY
+                self.current_direction = self.last_valid_key
+                self.move_up()
+            else:
+                self.move_down()
 
-        elif self.key == ord(self.LEFT_KEY):
-            self.last_valid_key = self.LEFT_KEY
-            self.snake_position[0] -= 1
+        elif self.key == self.LEFT_KEY:
+            if self.current_direction != self.RIGHT_KEY:
+                self.last_valid_key = self.LEFT_KEY
+                self.current_direction = self.last_valid_key
+                self.move_left()
+            else:
+                self.move_right()
 
-        elif self.key == ord(self.DOWN_KEY):
-            self.last_valid_key = self.DOWN_KEY
-            self.snake_position[1] += 1
+        elif self.key == self.DOWN_KEY:
+            if self.current_direction != self.UP_KEY:
+                self.last_valid_key = self.DOWN_KEY
+                self.current_direction = self.last_valid_key
+                self.move_down()
+            else:
+                self.move_up()
 
-        elif self.key == ord(self.RIGHT_KEY):
-            self.last_valid_key = self.RIGHT_KEY
-            self.snake_position[0] += 1
+        elif self.key == self.RIGHT_KEY:
+            if self.current_direction != self.LEFT_KEY:
+                self.last_valid_key = self.RIGHT_KEY
+                self.current_direction = self.last_valid_key
+                self.move_right()
+            else:
+                self.move_left()
 
-        elif self.key == ord(self.QUIT_KEY):
+        elif self.key == self.QUIT_KEY:
             self.game_over = True
 
-        elif self.key == ord(self.PAUSE_KEY):
+        elif self.key == self.PAUSE_KEY:
             pass
 
         else:
             # Any invalid key press makes the snake continue moving in last valid direction
             if self.last_valid_key == self.UP_KEY:
-                self.snake_position[1] -= 1
+                self.move_up()
             elif self.last_valid_key == self.LEFT_KEY:
-                self.snake_position[0] -= 1
+                self.move_left()
             elif self.last_valid_key == self.DOWN_KEY:
-                self.snake_position[1] += 1
+                self.move_down()
             elif self.last_valid_key == self.RIGHT_KEY:
-                self.snake_position[0] += 1
+                self.move_right()
 
     def display_snake(self):
         """Draws the snake to the console"""
         end_of_snake = self.snake_body[-1][:]
-        for i in range(len(self.snake_body)-1, 0, -1):
+        for i in range(len(self.snake_body) - 1, 0, -1):
             self.snake_body[i] = self.snake_body[i - 1]
 
         if end_of_snake not in self.snake_body:
@@ -257,17 +273,17 @@ class Snake:
 
     def check_tail_collision(self):
         """Checks if the snake head collides with the tail, gameover if true"""
-        if self.key == ord(self.UP_KEY):
-            if window.inch(self.snake_position[1] - 1, self.snake_position[0]) == ord(self.SEGMENT_CHAR):
+        if self.key == self.UP_KEY and not self.did_go_back_on_self():
+            if window.inch(self.snake_position[1], self.snake_position[0]) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
-        elif self.key == ord(self.LEFT_KEY):
-            if window.inch(self.snake_position[1], self.snake_position[0] - 1) == ord(self.SEGMENT_CHAR):
+        elif self.key == self.LEFT_KEY and not self.did_go_back_on_self():
+            if window.inch(self.snake_position[1], self.snake_position[0]) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
-        elif self.key == ord(self.DOWN_KEY):
-            if window.inch(self.snake_position[1] + 1, self.snake_position[0]) == ord(self.SEGMENT_CHAR):
+        elif self.key == self.DOWN_KEY and not self.did_go_back_on_self():
+            if window.inch(self.snake_position[1], self.snake_position[0]) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
-        elif self.key == ord(self.RIGHT_KEY):
-            if window.inch(self.snake_position[1], self.snake_position[0] + 1) == ord(self.SEGMENT_CHAR):
+        elif self.key == self.RIGHT_KEY and not self.did_go_back_on_self():
+            if window.inch(self.snake_position[1], self.snake_position[0]) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
 
     def jump_snake_position(self):
@@ -278,27 +294,27 @@ class Snake:
         moved to the other side.
         """
         # top wall
-        if self.snake_position[1] == Board.BOARD_HEIGHT - 1 and self.key == ord(self.LEFT_KEY):
+        if self.snake_position[1] == Board.BOARD_HEIGHT - 1 and self.key == self.LEFT_KEY:
             self.snake_position[1] = 1
-        elif self.snake_position[1] == Board.BOARD_HEIGHT - 1 and self.key == ord(self.RIGHT_KEY):
+        elif self.snake_position[1] == Board.BOARD_HEIGHT - 1 and self.key == self.RIGHT_KEY:
             self.snake_position[1] = 1
 
         # bottom wall
-        if self.snake_position[1] == 0 and self.key == ord(self.LEFT_KEY):
+        if self.snake_position[1] == 0 and self.key == self.LEFT_KEY:
             self.snake_position[1] = Board.BOARD_HEIGHT - 2
-        elif self.snake_position[1] == 0 and self.key == ord(self.RIGHT_KEY):
+        elif self.snake_position[1] == 0 and self.key == self.RIGHT_KEY:
             self.snake_position[1] = Board.BOARD_HEIGHT - 2
 
         # left wall
-        if self.snake_position[0] == 0 and self.key == ord(self.UP_KEY):
+        if self.snake_position[0] == 0 and self.key == self.UP_KEY:
             self.snake_position[0] = Board.BOARD_WIDTH - 2
-        elif self.snake_position[0] == 0 and self.key == ord(self.DOWN_KEY):
+        elif self.snake_position[0] == 0 and self.key == self.DOWN_KEY:
             self.snake_position[0] = Board.BOARD_WIDTH - 2
 
         # right wall
-        if self.snake_position[0] == Board.BOARD_WIDTH - 1 and self.key == ord(self.UP_KEY):
+        if self.snake_position[0] == Board.BOARD_WIDTH - 1 and self.key == self.UP_KEY:
             self.snake_position[0] = 1
-        elif self.snake_position[0] == Board.BOARD_WIDTH - 1 and self.key == ord(self.DOWN_KEY):
+        elif self.snake_position[0] == Board.BOARD_WIDTH - 1 and self.key == self.DOWN_KEY:
             self.snake_position[0] = 1
 
     def is_game_over(self):
@@ -308,6 +324,40 @@ class Snake:
     def grow_snake(self):
         """Appends the snake when called adding 1 segment to the end of its body"""
         self.snake_body.append(self.snake_body[-1])
+
+    # TODO better name?
+    def did_go_back_on_self(self):
+        """
+        Checks if the snake went back on its self
+        eg. did the user press to go down if the snake was moving up
+        thus running over the second snake segment
+        """
+        if self.current_direction == self.UP_KEY:
+            if self.key == self.DOWN_KEY:
+                return True
+        elif self.current_direction == self.DOWN_KEY:
+            if self.key == self.UP_KEY:
+                return True
+        elif self.current_direction == self.LEFT_KEY:
+            if self.key == self.RIGHT_KEY:
+                return True
+        elif self.current_direction == self.RIGHT_KEY:
+            if self.key == self.LEFT_KEY:
+                return True
+
+        return False
+
+    def move_up(self):
+        self.snake_position[1] -= 1
+
+    def move_down(self):
+        self.snake_position[1] += 1
+
+    def move_left(self):
+        self.snake_position[0] -= 1
+
+    def move_right(self):
+        self.snake_position[0] += 1
 
     def get_snake_head_x(self):
         return self.snake_position[0]
@@ -320,3 +370,6 @@ class Snake:
 
     def set_snake_head_y(self, y_val: int):
         self.snake_position[1] = y_val
+
+
+
