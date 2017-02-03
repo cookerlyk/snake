@@ -3,18 +3,18 @@
 
 Written in Python 3.5.1 using the curses module for terminal display and control.
 
-The code supports two different game options, the first will end the game when a wall is hit by the head of the snake,
-the second game mode allows the snake to pass through the walls to the other side and the game will only end if the
-snake runs into its tail.
+The game supports two different gameplay options, the first will end the game when a wall is hit by the head of the snake and
+the second allows the snake to pass through the walls to the other side. The game will only end if the
+snake runs into its body, in option 2.
 
 To choose solid walls select option 1 on the selection screen, selecting option 2 will allow the snake to pass through
 the walls to the other side.
 
-Written and tested on Mac OS El Capitan.
+Written and tested on Mac OS El Capitan
 
 ##Running the Game
-To run the game, download files and place in directory of your choice. Navigate to that
-directory in the terminal and type "python3 snake_main.py" into the window and press enter.
+To run the game, download the files or clone the repository and place in a directory of your choice. Navigate to that
+directory using the terminal and type "python3 snake_main.py" into the window, then press enter.
 
 ###Dependencies
 You must have python 3.x.x installed on your computer to run.<br/>
