@@ -39,13 +39,14 @@ class Snake:
         self.board_width = width
         self.board_height = height
 
+    # TODO move the user input to the game class and pass in the key to this function
     def move_position(self):
         """
         Takes input from the keyboard for the snake movement using 'W' 'A' 'S' 'D' keys
         If there is no input, movement continues in direction of the last key press
         Invalid input will continue the snake on the path of the last valid key press
         """
-        #TODO find a better way to handle the nested ifs
+        # TODO find a better way to handle the nested ifs
         movement = self.window.getch()
         self.key = self.key if movement == -1 else movement
         if self.key == self.UP_KEY:
@@ -84,6 +85,7 @@ class Snake:
             self.game_over = True
 
         elif self.key == self.PAUSE_KEY:
+            # TODO do something better with pausing, make it so the snake doesn't get shorter when the game is paused
             pass
 
         else:

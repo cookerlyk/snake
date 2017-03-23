@@ -1,5 +1,5 @@
-#Snake
-###Clone of the classic game snake
+# Snake
+### Clone of the classic game snake
 
 Written in Python 3.5.1 using the curses module for terminal display and control.
 
@@ -12,16 +12,16 @@ the walls to the other side.
 
 Written and tested on Mac OS El Capitan
 
-##Running the Game
+## Running the Game
 To run the game, download the files or clone the repository and place in a directory of your choice. Navigate to that
 directory using the terminal and type "python3 snake_main.py" into the window, then press enter.
 
-###Dependencies
+### Dependencies
 You must have python 3.x.x installed on your computer to run.<br/>
 Compatible with Mac OS and Linux
 
 
-##Controls
+## Controls
 
 Up.....................W<br/>
 Down.................S<br/>
