@@ -21,8 +21,6 @@ class Snake:
     STARTING_X = 30
     STARTING_Y = 9
 
-    current_direction = None
-
     snake_position = [STARTING_X, STARTING_Y]
     snake_body = [snake_position[:]] * INITIAL_LENGTH
     key = None
@@ -49,34 +47,35 @@ class Snake:
         # TODO find a better way to handle the nested ifs
         movement = self.window.getch()
         self.key = self.key if movement == -1 else movement
+
+        # if the snake is moving up ignore the key press if the down key is pressed
         if self.key == self.UP_KEY:
-            if self.current_direction != self.DOWN_KEY:
+            if self.last_valid_key != self.DOWN_KEY:
                 self.last_valid_key = self.UP_KEY
-                self.current_direction = self.last_valid_key
                 self.move_up()
             else:
                 self.move_down()
 
+        # if the snake is moving left ignore the key press if the right key is pressed
         elif self.key == self.LEFT_KEY:
-            if self.current_direction != self.RIGHT_KEY:
+            if self.last_valid_key != self.RIGHT_KEY:
                 self.last_valid_key = self.LEFT_KEY
-                self.current_direction = self.last_valid_key
                 self.move_left()
             else:
                 self.move_right()
 
+        # if the snake is moving down ignore the key press if the up key is pressed
         elif self.key == self.DOWN_KEY:
-            if self.current_direction != self.UP_KEY:
+            if self.last_valid_key != self.UP_KEY:
                 self.last_valid_key = self.DOWN_KEY
-                self.current_direction = self.last_valid_key
                 self.move_down()
             else:
                 self.move_up()
 
+        # if the snake is moving right ignore the key press if the left key is pressed
         elif self.key == self.RIGHT_KEY:
-            if self.current_direction != self.LEFT_KEY:
+            if self.last_valid_key != self.LEFT_KEY:
                 self.last_valid_key = self.RIGHT_KEY
-                self.current_direction = self.last_valid_key
                 self.move_right()
             else:
                 self.move_left()
@@ -127,6 +126,7 @@ class Snake:
             if self.window.inch(self.snake_position[1], self.snake_position[0]) == ord(self.SEGMENT_CHAR):
                 self.game_over = True
 
+    # TODO better name
     def jump_snake_position(self):
         """
         Function stops the wall bug from crashing the game if you get stuck between the walls.
@@ -173,16 +173,16 @@ class Snake:
         eg. did the user press to go down if the snake was moving up
         thus running over the second snake segment
         """
-        if self.current_direction == self.UP_KEY:
+        if self.last_valid_key == self.UP_KEY:
             if self.key == self.DOWN_KEY:
                 return True
-        elif self.current_direction == self.DOWN_KEY:
+        elif self.last_valid_key == self.DOWN_KEY:
             if self.key == self.UP_KEY:
                 return True
-        elif self.current_direction == self.LEFT_KEY:
+        elif self.last_valid_key == self.LEFT_KEY:
             if self.key == self.RIGHT_KEY:
                 return True
-        elif self.current_direction == self.RIGHT_KEY:
+        elif self.last_valid_key == self.RIGHT_KEY:
             if self.key == self.LEFT_KEY:
                 return True
 
