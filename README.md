@@ -12,6 +12,15 @@ the walls to the other side.
 
 Written and tested on Mac OS El Capitan
 
+## Screenshots
+### Launch Screen:
+
+<img width="700" alt="Snake Launch Screen" src="https://user-images.githubusercontent.com/21052307/37954402-86c868f0-315a-11e8-841b-e0037679436d.png">
+
+### Gameplay:
+
+<img width="700" alt="Gameplay" src="https://user-images.githubusercontent.com/21052307/37954405-8854d88e-315a-11e8-8c63-ca5163ec71f6.png">
+
 ## Running the Game
 To run the game, download the files or clone the repository and place in a directory of your choice. Navigate to that
 directory using the terminal and type "python3 snake_main.py" into the window, then press enter.
