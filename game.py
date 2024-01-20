@@ -65,19 +65,21 @@ class Game:
         if self.game_mode == "pass_through_walls":
             self.pass_through_if_wall_hit()
 
-        # Handle wall collisions specifically for 'solid_walls_with_lives' mode
+        # Handle "solid_walls_with_lives" mode
         if self.game_mode == "solid_walls_with_lives":
-            if self.snake.get_snake_head_y() == 0 or \
-                self.snake.get_snake_head_y() == self.board.get_board_height() - 1 or \
-                self.snake.get_snake_head_x() == 0 or \
-                self.snake.get_snake_head_x() == self.board.get_board_width() - 1:
+            # Check for wall hit or self-collision
+            wall_hit = self.snake.get_snake_head_y() == 0 or \
+                    self.snake.get_snake_head_y() == self.board.get_board_height() - 1 or \
+                    self.snake.get_snake_head_x() == 0 or \
+                    self.snake.get_snake_head_x() == self.board.get_board_width() - 1
+
+            if self.snake.is_game_over() or wall_hit:
                 if self.lives > 1:
                     self.lives -= 1
                     self.reset_game()       # Reset the game, not end it
-                    return                  # Return here to avoid immediately checking the game over condition
                 else:
                     self.game_over = True  # No more lives
-                    return
+
 
         # For other modes or if 'pass_through_walls' is enabled
         if self.game_mode != "pass_through_walls":
