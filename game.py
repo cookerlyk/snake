@@ -29,7 +29,17 @@ class Game:
         """
         self.window = curses.newwin(20, 60, 0, 10)  # Creates window
         self.window.border(0)                       # Draws border by default
-        self.pass_through_walls = mode
+
+        self.game_mode = mode  # Store the game mode as a string
+
+        # Initialize game attributes based on the selected game mode
+        if self.game_mode == "solid_walls_with_lives":
+            self.lives = 3  # Starting number of lives for this mode
+            self.pass_through_walls = False
+        elif self.game_mode == "pass_through_walls":
+            self.pass_through_walls = True
+        else:  # Default to solid walls if an unknown mode is provided
+            self.pass_through_walls = False
 
         self.board = Board(self.window)
         self.snake = Snake(self.window, self.board.get_board_width(), self.board.get_board_height())
@@ -41,17 +51,40 @@ class Game:
         """
         self.window.addstr(19, 49, "Score:" + str(self.score))
         self.window.addstr(0, 28, "SNAKE")
-
+        ###
+        if self.game_mode == "solid_walls_with_lives":
+            self.window.addstr(0, 2, "Lives: " + str(self.lives))  # Display lives on the screen
+        ###
         self.board.display_fruit()
         self.snake.display_snake()
         self.snake.move_position()               # Gets user input for movement
         self.check_fruit_collision()
         self.snake.check_tail_collision()
-        self.set_game_over()                     # Checks if the snake class signaled a game over
-        if not self.pass_through_walls:
-            self.game_over_if_wall_hit()
-        else:
+        
+        # Handle the "pass_through_walls" mode
+        if self.game_mode == "pass_through_walls":
             self.pass_through_if_wall_hit()
+
+        # Handle wall collisions specifically for 'solid_walls_with_lives' mode
+        if self.game_mode == "solid_walls_with_lives":
+            if self.snake.get_snake_head_y() == 0 or \
+                self.snake.get_snake_head_y() == self.board.get_board_height() - 1 or \
+                self.snake.get_snake_head_x() == 0 or \
+                self.snake.get_snake_head_x() == self.board.get_board_width() - 1:
+                if self.lives > 1:
+                    self.lives -= 1
+                    self.reset_game()       # Reset the game, not end it
+                    return                  # Return here to avoid immediately checking the game over condition
+                else:
+                    self.game_over = True  # No more lives
+                    return
+
+        # For other modes or if 'pass_through_walls' is enabled
+        if self.game_mode != "pass_through_walls":
+            self.game_over_if_wall_hit()
+
+        if self.game_mode != "solid_walls_with_lives":
+            self.set_game_over()
 
         self.snake.jump_snake_position()         # Fixes the game crashing bug where you can get stuck in the wall
 
@@ -89,6 +122,20 @@ class Game:
         if self.fruit_eaten % 2 == 0:
             if self.current_game_speed > self.MAX_GAME_SPEED:
                 self.current_game_speed -= 1
+
+    def reset_game(self):
+        """Resets the game state but keeps the score and reduces lives."""
+        # Clear the part of the window where the snake was
+        for segment in self.snake.snake_body:
+            self.window.addch(segment[1], segment[0], ' ')  # Replace old segments with spaces
+
+        # Clear the old fruit
+        self.window.addch(self.board.fruit_position[1], self.board.fruit_position[0], ' ')
+
+        self.snake.reset_snake()  # Reset the snake
+        self.board.update_fruit_position()  # Place a new fruit
+        self.board.display_fruit()  # Redisplay the fruit
+        self.window.refresh()  # Refresh the window to update the display
 
     def game_over_if_wall_hit(self):
         """
