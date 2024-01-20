@@ -3,9 +3,8 @@
 
 Written in Python 3.5.1 using the curses module for terminal display and control.
 
-The game supports two different gameplay options, the first will end the game when a wall is hit by the head of the snake and
-the second allows the snake to pass through the walls to the other side. The game will only end if the
-snake runs into its body, in option 2.
+The game supports three different gameplay options, the first will end the game when a wall is hit by the head of the snake and
+the second allows the snake to pass through the walls to the other side. option 3 allows users to play with lives, this is like the first mode where the game will end when a wall is hit by the head of the snake, 3 lives are given and the score will keep progressing until game over.
 
 To choose solid walls select option 1 on the selection screen, selecting option 2 will allow the snake to pass through
 the walls to the other side.

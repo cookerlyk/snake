@@ -38,18 +38,20 @@ def draw_option_select_window():
     option_screen = curses.newwin(20, 60, 0, 8)
     option_screen.addstr(7, 24,  "Select Game Mode")
     option_screen.addstr(12, 13, "(1) Solid Walls    (2) Pass Through Walls")
+    option_screen.addstr(13, 13, "(3) Solid Walls with Lives")
     key_pressed = None
     while True:
         key_pressed = option_screen.getch()
-        if key_pressed == ord("1") or key_pressed == ord("2"):
+        if key_pressed in (ord("1"), ord("2"), ord("3")):
             break
     curses.endwin()
+
     if key_pressed == ord("1"):
-        return False
-    else:
-        return True
-
-
+        return "solid_walls"
+    elif key_pressed == ord("2"):
+        return "pass_through_walls"
+    elif key_pressed == ord("3"):
+        return "solid_walls_with_lives"
 
 def draw_game_over_window(score):
     """

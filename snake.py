@@ -37,6 +37,18 @@ class Snake:
         self.board_width = width
         self.board_height = height
 
+    def reset_snake(self):
+        """Resets the snake to its initial state."""
+        # Keep the current length of the snake
+        current_length = len(self.snake_body)
+        # Reset head position
+        self.snake_position = [self.STARTING_X, self.STARTING_Y]
+        
+        self.snake_body = [self.snake_position[:]] * (current_length - 1)
+        self.key = None
+        self.last_valid_key = None
+        self.game_over = False
+
     # TODO move the user input to the game class and pass in the key to this function
     def move_position(self):
         """
